@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+import os
 
 from pathlib import Path
 
@@ -19,12 +20,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-mn*-m4i2cr!*h5fzb5i!$-=6megk2h0&ov_rs486d@s$n9p$mp'
+SECRET_KEY = os.environ['Django_Secret_Key']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['lddserver--publishername.repl.co', 'api.smartkrishi.me']
+ALLOWED_HOSTS = [
+    'lddserver--publishername.repl.co', 'api.smartkrishi.me', '10.100.128.201'
+]
 
 # Application definition
 
@@ -96,10 +99,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME':
-        'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME':
         'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
@@ -139,5 +138,4 @@ REST_FRAMEWORK = {
     ],
 }
 
-CORS_ORIGIN_WHITELIST = ('http://localhost:3000', 'https://smartkrishi.me',
-                         'http://smartkrishi.me')
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'https://smartkrishi.me']
