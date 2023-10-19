@@ -24,7 +24,9 @@ SECRET_KEY = 'django-insecure-mn*-m4i2cr!*h5fzb5i!$-=6megk2h0&ov_rs486d@s$n9p$mp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['lddserver--publishername.repl.co', 'api.smartkrishi.me']
+ALLOWED_HOSTS = [
+    'lddserver--publishername.repl.co', 'api.smartkrishi.me', '10.100.128.22'
+]
 
 # Application definition
 
@@ -139,5 +141,4 @@ REST_FRAMEWORK = {
     ],
 }
 
-CORS_ORIGIN_WHITELIST = ('http://localhost:3000', 'https://smartkrishi.me',
-                         'http://smartkrishi.me')
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'https://smartkrishi.me']
