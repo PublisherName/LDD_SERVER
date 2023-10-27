@@ -1,11 +1,18 @@
-from django.urls import path,include
-from django.http import HttpResponse
+from django.urls import path, include
+from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework import routers
 
-def server_status(request):
-    return HttpResponse('Server is running', status=200)
+from auths.views import ServerStatusViewSet, UserRegistrationViewSet, UserLoginViewSet, UserDetailsViewSet
+
+
+router = routers.DefaultRouter()
+router.register(r'status', ServerStatusViewSet, basename='status')
+router.register(r'register', UserRegistrationViewSet, basename='register')
+router.register(r'login', UserLoginViewSet, basename='login')
+router.register(r'profile', UserDetailsViewSet, basename='profile')
 
 
 urlpatterns = [
-     path('auth/', include('rest_registration.api.urls')),
-     path('status/', server_status),
+    path('', include(router.urls)),
 ]
