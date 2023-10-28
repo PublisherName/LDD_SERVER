@@ -71,5 +71,27 @@ class UserLoginSerializer(serializers.ModelSerializer):
                     raise ValidationError('User is not active')
         else:
             raise ValidationError('Must provide username and password both')
-        return data        
+        return data
+    
+class UserChangePasswordSerializer(serializers.ModelSerializer):
+    old_password = serializers.CharField(required=True, allow_blank=False)
+    password = serializers.CharField(required=True, allow_blank=False)
+    confirm_password = serializers.CharField(required=True, allow_blank=False)
 
+    class Meta:
+        model = User
+        fields = ('password','confirm_password','old_password')
+        
+    def validate(self, data):
+        if data['password'] != data['confirm_password']:
+            raise ValidationError("Passwords do not match.")
+        if data['password'] == data['old_password']:
+            raise ValidationError("New password cannot be same as old password.")
+        return data
+    
+    def update(self, instance, validated_data):
+        if not self.instance.check_password(validated_data['old_password']):
+            raise ValidationError("Old password is incorrect.")
+        instance.set_password(validated_data['password'])
+        instance.save()
+        return instance

@@ -7,7 +7,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework import viewsets, authentication
 from rest_framework.permissions import IsAuthenticated
 
-from auths.serializers import UserRegistrationSerializer , UserSerializer, UserLoginSerializer
+from auths.serializers import UserRegistrationSerializer , UserSerializer, UserLoginSerializer, UserChangePasswordSerializer
 
 
 class ServerStatusViewSet(viewsets.ViewSet):
@@ -16,8 +16,6 @@ class ServerStatusViewSet(viewsets.ViewSet):
 
 
 class UserRegistrationViewSet(viewsets.ViewSet):
-    serializer_class = UserRegistrationSerializer
-    
     def create(self, request):
         serializer = UserRegistrationSerializer(data=request.data)
         if serializer.is_valid():
@@ -55,3 +53,18 @@ class UserDetailsViewSet(viewsets.ReadOnlyModelViewSet):
             raise PermissionDenied('Token does not belong to this user')
 
         return User.objects.filter(pk=self.request.user.pk)
+
+class UserChangePasswordViewSet(viewsets.ViewSet):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request):
+        serializer = UserChangePasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = authenticate(username=request.user.username, password=serializer.validated_data['old_password'])
+        if user is not None:
+            user.set_password(serializer.validated_data['password'])
+            user.save()
+            return Response({'status': 'Password changed'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'details': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
