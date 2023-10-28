@@ -7,7 +7,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework import viewsets, authentication
 from rest_framework.permissions import IsAuthenticated
 
-from auths.serializers import UserRegistrationSerializer , UserSerializer
+from auths.serializers import UserRegistrationSerializer , UserSerializer, UserLoginSerializer
 
 
 class ServerStatusViewSet(viewsets.ViewSet):
@@ -29,19 +29,18 @@ class UserRegistrationViewSet(viewsets.ViewSet):
 
 class UserLoginViewSet(viewsets.ViewSet):
     def create(self, request):
-        if request.method == 'POST':
-            username = request.data.get('username')
-            password = request.data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                token, created = Token.objects.get_or_create(user=user)
-                user.token = token
-                user.save()
-                return Response({'token': token.key})
-            else:
-                return Response({'details': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = UserLoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        username = serializer.validated_data['username']
+        password = serializer.validated_data['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            token, _ = Token.objects.get_or_create(user=user)
+            user.token = token
+            user.save()
+            return Response({'token': token.key})
         else:
-            return Response({'details': 'Method not allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+            return Response({'details': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserDetailsViewSet(viewsets.ReadOnlyModelViewSet):
