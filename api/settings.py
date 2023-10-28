@@ -14,7 +14,9 @@ SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['api.smartkrishi.me','localhost']
+ALLOWED_HOSTS = [
+    'api.smartkrishi.me', 'localhost', 'lddserver--publishername.repl.co'
+]
 
 # Application definition
 
@@ -115,7 +117,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = ['http://localhost:3000', 'https://smartkrishi.me']
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS':
+    'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10
 }
 
