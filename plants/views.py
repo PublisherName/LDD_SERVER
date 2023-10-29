@@ -7,8 +7,8 @@ from .serializers import PlantDiseaseDetectionSerializer
 
 class PlantDiseaseDetectionViewSet(viewsets.ViewSet):
     serializer_class = PlantDiseaseDetectionSerializer
-    #authentication_classes = [authentication.TokenAuthentication]
-    #permission_classes = [IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def create(self, request):
         serializer = PlantDiseaseDetectionSerializer(data=request.data)
