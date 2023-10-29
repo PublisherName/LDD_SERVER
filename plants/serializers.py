@@ -15,11 +15,8 @@ class PlantDiseaseDetectionSerializer(serializers.Serializer):
         image_ext = image_file.name.split('.')[-1]
         image_name = f"{uuid.uuid4().hex}.{image_ext}"
         
-        upload_image_path = os.path.join(
-            settings.MEDIA_ROOT, 'plants_uploaded', image_name)
-        
-        upload_image_url = os.path.join(
-            settings.MEDIA_URL, 'plants_uploaded', image_name)
+        upload_image_path = os.path.join(settings.MEDIA_ROOT, 'plants_uploaded', image_name)        
+        upload_image_url = os.path.join(settings.MEDIA_URL, 'plants_uploaded', image_name)
 
         with open(upload_image_path, 'wb') as f:
             f.write(image_file.read())
