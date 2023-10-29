@@ -17,4 +17,4 @@ router.register(r'plant-disease-detection', PlantDiseaseDetectionViewSet, basena
 
 urlpatterns = [
     path('', include(router.urls)),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
