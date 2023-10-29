@@ -15,8 +15,7 @@ SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'api.smartkrishi.me', 'localhost', 'lddserver--publishername.repl.co'
-]
+    'api.smartkrishi.me', 'localhost']
 
 # Application definition
 
