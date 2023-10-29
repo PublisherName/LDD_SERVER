@@ -1,51 +1,44 @@
 import os
-from rest_framework import serializers
-import os
 import uuid
-from roboflow import Roboflow
+import base64
+import requests
+from rest_framework import serializers
+
 from django.conf import settings
-from rest_framework import status
-from rest_framework.response import Response
-
-
-try:
-    Roboflow_Connection_Error = False
-    project = Roboflow(api_key=os.environ['ROBO_FLOW_API_KEY']).workspace(
-    ).project("leaf-disease-detection-mpdfi")
-    model = project.version(3).model
-except:
-    Roboflow_Connection_Error = True
-
 
 class PlantDiseaseDetectionSerializer(serializers.Serializer):
-    image = serializers.ImageField()
+    image = serializers.ImageField(required=True)
 
     def create(self, validated_data):
 
         image_file = validated_data['image']
+        image_ext = image_file.name.split('.')[-1]
+        image_name = f"{uuid.uuid4().hex}.{image_ext}"
+        
+        upload_image_path = os.path.join(
+            settings.MEDIA_ROOT, 'plants_uploaded', image_name)
+        
+        upload_image_url = os.path.join(
+            settings.MEDIA_URL, 'plants_uploaded', image_name)
 
-        if not Roboflow_Connection_Error:
+        with open(upload_image_path, 'wb') as f:
+            f.write(image_file.read())
 
-            image_name = f"{uuid.uuid4().hex}.{image_file.name.split('.')[-1]}"
-            upload_image_path = os.path.join(
-                settings.MEDIA_ROOT, 'plants_uploaded', image_name)
-            detected_image_path = os.path.join(
-                settings.MEDIA_ROOT, 'plants_detected', f"{uuid.uuid4().hex}.jpg")
-            with open(upload_image_path, 'wb') as f:
-                f.write(image_file.read())
+        image_file = open(upload_image_path, 'rb')
+        encoded_image = base64.b64encode(image_file.read()).decode('utf-8')
 
-            try:
-                result = model.predict(
-                    upload_image_path, confidence=40, overlap=30).json()
+        try:
+            url = os.environ['ROBO_FLOW_API_URL']
+            headers = {'Content-Type': 'application/json'}
+            response = requests.post(url, headers=headers, json=encoded_image)
+            if response.status_code == 200:
+                result = response.json()
                 for predictions in result['predictions']:
-                    model.predict(predictions['image_path'], confidence=40, overlap=30).save(
-                        detected_image_path)
-                    os.remove(predictions['image_path'])
-                    predictions.pop('image_path')
-                    predictions['detection_image'] = detected_image_path
-            except Exception as e:
+                    predictions['image'] = upload_image_url
+                return result
+            else:
                 os.remove(upload_image_path)
-                raise serializers.ValidationError({'details': 'Unable to predict sample.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            return result
-        else:
-           raise serializers.ValidationError({'details': 'Unable to connect to ML model.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return {'details': 'Please try again later.'}
+        except:
+            os.remove(upload_image_path)
+            return {'details': 'Please try again later.'}
