@@ -39,16 +39,23 @@ jobs:
         pip install -r requirement.txt
         EOF
     
+    - name: Copying Virtual Environment
+      run: |
+        sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -T ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
+        cd ${{ secrets.WORK_DIR }}
+        rm -rf .env
+        echo 'DJANGO_SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}"' >> .env
+        echo 'ROBO_FLOW_API_URL="${{ secrets.ROBO_FLOW_API_URL }}"' >> .env
+        echo 'EMAIL_HOST="${{ secrets.EMAIL_HOST }}"' >> .env
+        echo 'EMAIL_HOST_USER="${{ secrets.EMAIL_HOST_USER }}"' >> .env
+        echo 'EMAIL_HOST_PASSWORD="${{ secrets.EMAIL_HOST_PASSWORD }}"' >> .env
+        echo 'DEFAULT_FROM_EMAIL="${{ secrets.DEFAULT_FROM_EMAIL }}"' >> .env
+        EOF
+    
     - name: Migrate Database && Collect Static Files
       run: |
         sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -T ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
         cd ${{ secrets.WORK_DIR }}
-        export DJANGO_SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}"
-        export ROBO_FLOW_API_URL="${{ secrets.ROBO_FLOW_API_URL }}"
-        export EMAIL_HOST="${{ secrets.EMAIL_HOST }}"
-        export EMAIL_HOST_USER="${{ secrets.EMAIL_HOST_USER }}"
-        export EMAIL_HOST_PASSWORD="${{ secrets.EMAIL_HOST_PASSWORD }}"
-        export DEFAULT_FROM_EMAIL="${{ secrets.DEFAULT_FROM_EMAIL }}"
         python manage.py migrate
         python manage.py collectstatic --noinput
         EOF

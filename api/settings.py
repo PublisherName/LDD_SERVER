@@ -9,24 +9,14 @@ load_dotenv()
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-if DEBUG:
-    SECRETS = {
-        'DJANGO_SECRET_KEY': os.getenv('DJANGO_SECRET_KEY'),
-        'EMAIL_HOST': os.getenv('EMAIL_HOST'),
-        'EMAIL_HOST_USER': os.getenv('EMAIL_HOST_USER'),
-        'EMAIL_HOST_PASSWORD': os.getenv('EMAIL_HOST_PASSWORD'),
-        'DEFAULT_FROM_EMAIL': os.getenv('DEFAULT_FROM_EMAIL'),
-        'ROBO_FLOW_API_URL': os.getenv('ROBO_FLOW_API_URL'),
-    }
-else:
-    SECRETS = {
-        'DJANGO_SECRET_KEY': os.environ['DJANGO_SECRET_KEY'],
-        'EMAIL_HOST': os.environ['EMAIL_HOST'],
-        'EMAIL_HOST_USER': os.environ['EMAIL_HOST_USER'],
-        'EMAIL_HOST_PASSWORD': os.environ['EMAIL_HOST_PASSWORD'],
-        'DEFAULT_FROM_EMAIL': os.environ['DEFAULT_FROM_EMAIL'],
-        'ROBO_FLOW_API_URL': os.environ['ROBO_FLOW_API_URL'],
-    }
+SECRETS = {
+    'DJANGO_SECRET_KEY': os.getenv('DJANGO_SECRET_KEY'),
+    'EMAIL_HOST': os.getenv('EMAIL_HOST'),
+    'EMAIL_HOST_USER': os.getenv('EMAIL_HOST_USER'),
+    'EMAIL_HOST_PASSWORD': os.getenv('EMAIL_HOST_PASSWORD'),
+    'DEFAULT_FROM_EMAIL': os.getenv('DEFAULT_FROM_EMAIL'),
+    'ROBO_FLOW_API_URL': os.getenv('ROBO_FLOW_API_URL'),
+}
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
