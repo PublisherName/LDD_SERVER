@@ -43,8 +43,6 @@ jobs:
       run: |
         sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -T ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
         cd ${{ secrets.WORK_DIR }}
-        export DJANGO_SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}"
-        export ROBO_FLOW_API_URL="${{ secrets.ROBO_FLOW_API_URL }}"
         python manage.py migrate
         python manage.py collectstatic --noinput
         EOF

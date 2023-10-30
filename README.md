@@ -16,10 +16,3 @@ python3 -m venv .env
 ```bash
 source .env/bin/activate
 ```
-
-### Activate Virtual variable
-
-```bash
-export Django_Secret_Key='<Your_Secret_Key_Here>'
-export ROBO_FLOW_API_KEY='<Your_Secret_Key_Here>'
-```
