@@ -25,7 +25,7 @@ class PlantDiseaseDetectionSerializer(serializers.Serializer):
         encoded_image = base64.b64encode(image_file.read()).decode('utf-8')
 
         try:
-            url = "${{secret.ROBO_FLOW_API_URL}}"
+            url = settings.SECRETS.get('ROBO_FLOW_API_URL')
             headers = {'Content-Type': 'application/json'}
             response = requests.post(url, headers=headers, json=encoded_image)
             if response.status_code == 200:

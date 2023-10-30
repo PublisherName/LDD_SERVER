@@ -2,6 +2,33 @@ import os
 
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = False
+
+if DEBUG:
+    SECRETS = {
+        'DJANGO_SECRET_KEY': os.getenv('DJANGO_SECRET_KEY'),
+        'EMAIL_HOST': os.getenv('EMAIL_HOST'),
+        'EMAIL_HOST_USER': os.getenv('EMAIL_HOST_USER'),
+        'EMAIL_HOST_PASSWORD': os.getenv('EMAIL_HOST_PASSWORD'),
+        'DEFAULT_FROM_EMAIL': os.getenv('DEFAULT_FROM_EMAIL'),
+        'ROBO_FLOW_API_URL': os.getenv('ROBO_FLOW_API_URL'),
+    }
+else:
+    SECRETS = {
+        'DJANGO_SECRET_KEY': os.environ['DJANGO_SECRET_KEY'],
+        'EMAIL_HOST': os.environ['EMAIL_HOST'],
+        'EMAIL_HOST_USER': os.environ['EMAIL_HOST_USER'],
+        'EMAIL_HOST_PASSWORD': os.environ['EMAIL_HOST_PASSWORD'],
+        'DEFAULT_FROM_EMAIL': os.environ['DEFAULT_FROM_EMAIL'],
+        'ROBO_FLOW_API_URL': os.environ['ROBO_FLOW_API_URL'],
+    }
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -9,10 +36,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "${{ secrets.DJANGO_SECRET_KEY }}"
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+SECRET_KEY = SECRETS.get('DJANGO_SECRET_KEY')
 
 ALLOWED_HOSTS = [
     'api.smartkrishi.me', 'localhost']
@@ -28,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'django_rest_passwordreset',
     'corsheaders',
     'auths',
     'plants',
@@ -125,3 +150,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'public', 'static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'public', 'media')
+
+# Email settings
+EMAIL_HOST = SECRETS.get('EMAIL_HOST')
+EMAIL_HOST_USER = SECRETS.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = SECRETS.get('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = SECRETS.get('DEFAULT_FROM_EMAIL')
+EMAIL_PORT = 2525
+EMAIL_USE_TLS = True
