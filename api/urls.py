@@ -17,6 +17,11 @@ from django.conf import settings
 from rest_framework import routers
 from django.urls import path, include
 
+from django.conf.urls import (
+    handler404, 
+    handler500,
+  )
+
 router = routers.DefaultRouter()
 
 router.register(
@@ -77,3 +82,6 @@ router.register(
 urlpatterns = [
     path('', include(router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+handler404 = 'api.views.error404'
+handler500 = 'api.views.error500'
