@@ -150,3 +150,15 @@ EMAIL_HOST_PASSWORD = SECRETS.get('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = SECRETS.get('DEFAULT_FROM_EMAIL')
 EMAIL_PORT = 2525
 EMAIL_USE_TLS = True
+
+# Django Rest Password Reset
+DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE=True
+DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
+    "CLASS": "django_rest_passwordreset.tokens.RandomNumberTokenGenerator",
+    "OPTIONS": {
+        "min_length": 4,
+        "max_length": 5,
+        "min_number": 1500,
+        "max_number": 9999,
+    }
+}

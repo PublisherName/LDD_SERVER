@@ -7,7 +7,12 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework import viewsets, authentication
 from rest_framework.permissions import IsAuthenticated
 
-from auths.serializers import UserRegistrationSerializer , UserSerializer, UserLoginSerializer, UserChangePasswordSerializer
+from auths.serializers import \
+    UserRegistrationSerializer , \
+    UserSerializer, \
+    UserLoginSerializer, \
+    UserChangePasswordSerializer, \
+    UserActivationSerializer
 
 
 class ServerStatusViewSet(viewsets.ViewSet):
@@ -19,10 +24,25 @@ class UserRegistrationViewSet(viewsets.ViewSet):
     def create(self, request):
         serializer = UserRegistrationSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.save()
-            return Response({'status': 'User created'}, status=status.HTTP_201_CREATED)
+            user = serializer.create(serializer.validated_data)
+            if user:
+                return Response({'status': 'User created. Please verify email to activate acccount.'}, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserActivationViewSet(viewsets.ViewSet):
+    serializer_class = UserActivationSerializer
+
+    def create(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            serializer.delete()
+            return Response({'status': 'User activated.'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserLoginViewSet(viewsets.ViewSet):

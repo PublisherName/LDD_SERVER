@@ -10,7 +10,8 @@ from auths.views import \
     UserRegistrationViewSet, \
     UserLoginViewSet, \
     UserDetailsViewSet, \
-    UserChangePasswordViewSet
+    UserChangePasswordViewSet, \
+    UserActivationViewSet
 
 from django.conf.urls.static import static
 from django.conf import settings
@@ -34,6 +35,12 @@ router.register(
     r'register',
     UserRegistrationViewSet,
     basename='register'
+)
+
+router.register(
+    r'activate',
+    UserActivationViewSet,
+    basename='activate'
 )
 
 router.register(

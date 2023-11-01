@@ -1,0 +1,11 @@
+Hello {{username}},
+
+Your verification token to smart krishi is:
+
+{{token}}
+
+Thank you for choosing Smart Krishi. If you need assistance, contact us.
+
+Best regards,
+
+Smart Krishi
