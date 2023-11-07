@@ -11,7 +11,7 @@ class PlantDiseaseDetectionViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
 
     def create(self, request):
-        serializer = PlantDiseaseDetectionSerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         result = serializer.save()
         return Response(result)

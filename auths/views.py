@@ -21,8 +21,10 @@ class ServerStatusViewSet(viewsets.ViewSet):
 
 
 class UserRegistrationViewSet(viewsets.ViewSet):
+    serializer_class = UserRegistrationSerializer
+
     def create(self, request):
-        serializer = UserRegistrationSerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             user = serializer.create(serializer.validated_data)
             if user:
@@ -46,8 +48,10 @@ class UserActivationViewSet(viewsets.ViewSet):
 
 
 class UserLoginViewSet(viewsets.ViewSet):
+    serializer_class = UserLoginSerializer
+
     def create(self, request):
-        serializer = UserLoginSerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         username = serializer.validated_data['username']
         password = serializer.validated_data['password']
@@ -75,11 +79,12 @@ class UserDetailsViewSet(viewsets.ReadOnlyModelViewSet):
         return User.objects.filter(pk=self.request.user.pk)
 
 class UserChangePasswordViewSet(viewsets.ViewSet):
+    serializer_class = UserChangePasswordSerializer
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def create(self, request):
-        serializer = UserChangePasswordSerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = authenticate(username=request.user.username, password=serializer.validated_data['old_password'])
         if user is not None:
