@@ -13,15 +13,27 @@ from auths.views import \
     UserChangePasswordViewSet, \
     UserActivationViewSet
 
-from django.conf.urls.static import static
+from drf_yasg import openapi
 from django.conf import settings
-from rest_framework import routers
 from django.urls import path, include
+from drf_yasg.views import get_schema_view
+from django.conf.urls.static import static
+from rest_framework import routers, permissions
 
 from django.conf.urls import (
     handler404, 
     handler500,
   )
+
+schema_view = get_schema_view(
+   openapi.Info(
+      title="SmartKrishi API",
+      default_version='v1',
+      description="Leafe Disease Detection API",
+   ),
+   public=True,
+   permission_classes=[permissions.AllowAny],
+)
 
 router = routers.DefaultRouter()
 
@@ -88,6 +100,7 @@ router.register(
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 handler404 = 'api.views.error404'

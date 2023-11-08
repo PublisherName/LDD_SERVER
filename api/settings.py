@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'auths',
     'plants',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -161,4 +162,14 @@ DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
         "min_number": 1500,
         "max_number": 9999,
     }
+}
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'basic': {
+            'type': 'basic'
+        }
+    },
+    'LOGIN_URL': None,
+    'LOGOUT_URL': None,
 }

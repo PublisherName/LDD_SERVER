@@ -14,15 +14,17 @@ from auths.serializers import \
     UserChangePasswordSerializer, \
     UserActivationSerializer
 
+from drf_yasg.utils import swagger_auto_schema
+
 
 class ServerStatusViewSet(viewsets.ViewSet):
     def list(self,request):
         return Response({'status': 'Server is running'})
 
-
 class UserRegistrationViewSet(viewsets.ViewSet):
     serializer_class = UserRegistrationSerializer
 
+    @swagger_auto_schema(request_body=UserRegistrationSerializer)
     def create(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
@@ -38,6 +40,7 @@ class UserRegistrationViewSet(viewsets.ViewSet):
 class UserActivationViewSet(viewsets.ViewSet):
     serializer_class = UserActivationSerializer
 
+    @swagger_auto_schema(request_body=UserActivationSerializer)
     def create(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
@@ -50,6 +53,7 @@ class UserActivationViewSet(viewsets.ViewSet):
 class UserLoginViewSet(viewsets.ViewSet):
     serializer_class = UserLoginSerializer
 
+    @swagger_auto_schema(request_body=UserLoginSerializer)
     def create(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -70,11 +74,12 @@ class UserDetailsViewSet(viewsets.ReadOnlyModelViewSet):
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(request_body=UserSerializer)
     def get_queryset(self):
         user = self.request.user
         token_user = self.request.auth.user if self.request.auth else None
         if user != token_user:
-            raise PermissionDenied('Token does not belong to this user')
+            return Response({'details': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
         return User.objects.filter(pk=self.request.user.pk)
 
@@ -83,6 +88,7 @@ class UserChangePasswordViewSet(viewsets.ViewSet):
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(request_body=UserChangePasswordSerializer)
     def create(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
