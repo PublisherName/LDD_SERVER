@@ -4,6 +4,8 @@ Your verification token to smart krishi is:
 
 {{token}}
 
+{{activation_link}}
+
 Thank you for choosing Smart Krishi. If you need assistance, contact us.
 
 Best regards,

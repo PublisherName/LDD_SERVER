@@ -65,6 +65,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         user.save()
 
         context = {
+            'activation_link': settings.FRONTEND_URL + '/activate/' + validated_data['email'] + '/' + token,
             'username': user.username,
             'token': token,
         }

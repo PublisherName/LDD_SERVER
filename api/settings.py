@@ -173,3 +173,5 @@ SWAGGER_SETTINGS = {
     'LOGIN_URL': None,
     'LOGOUT_URL': None,
 }
+
+FRONTEND_URL = 'https://smartkrishi.me'

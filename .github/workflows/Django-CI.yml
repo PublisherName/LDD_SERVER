@@ -36,7 +36,7 @@ jobs:
       run: |
         sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -T ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
         cd ${{ secrets.WORK_DIR }}
-        pip install -r requirement.txt
+        ${{secrets.INSTALL_PYTHON_DEPENDENCIES}}
         EOF
     
     - name: Copying Virtual Environment
@@ -56,8 +56,7 @@ jobs:
       run: |
         sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -T ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
         cd ${{ secrets.WORK_DIR }}
-        python manage.py migrate
-        python manage.py collectstatic --noinput
+        ${{ secrets.MIGRATE_DATABASE }}
         EOF
         
     - name: Restart WSGI server (Gunicorn)
